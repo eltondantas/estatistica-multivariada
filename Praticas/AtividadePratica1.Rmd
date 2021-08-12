@@ -1,0 +1,139 @@
+---
+title: "Multivariada - Atividade Prática 1 - PCA"
+author: "Elton Dantas de Oliveira Mesquita"
+output:
+  html_document:
+    theme: readable
+    highlight: breezedark
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#install.packages("FactoMineR")
+library(FactoMineR)
+
+#install.packages("factoextra")
+library(factoextra)
+
+
+
+#install.packages("ggplot2")
+library(ggplot2)
+
+#install.packages("ggcorrplot")
+library(ggcorrplot)
+
+#install.packages("psych")
+library(psych)
+
+#install.packages('Rcpp')
+library(Rcpp)
+
+#install.packages("dplyr")
+library(dplyr)
+```
+
+
+
+Os dados abaixo correspondem as marcas obtidas pelos atletas de diversos países por ocasião dos Jogos Olímpicos de Los Angeles (1984). As variáveis representam os tempos registrados por atletas do sexo feminino nas seguintes competições:
+
+- $X_1$: Corrida de 100m (em segundo);
+- $X_2$: Corrida de 200m (em segundo);
+- $X_3$: Corrida de 400m (em segundo);
+- $X_4$: Corrida de 800m (em minuto);
+- $X_5$: Corrida de 1500m (em minuto);
+- $X_6$: Corrida de 3000m (em minuto);
+- $X_7$: Maratona (em minuto).
+
+```{r}
+# Importando os dados
+dados = read.table("T1-9.DAT")
+
+# Nomeando as linhas com os nomes dos países
+row.names(dados) = dados[,8]
+
+# Removendo a coluna de países
+dados = dados[,-8]
+
+# Nomeando as variáveis
+variaveis = c("100m (s)","200m (s)","400m (s)","800m (min)",
+              "1500m (min)","3000m (min)", "Maratona (min)")
+colnames(dados) = variaveis
+
+# Breve visualização dos dados
+head(dados,10)
+```
+
+Medidas resumo dos dados
+```{r}
+summary(dados)
+```
+
+Desvios padrão das variáveis
+```{r}
+apply(dados,2,sd)
+```
+
+Pelo resumo dos dados e pelos desvios-padrão de suas variáveis, podemos observar que as elas são medidas em unidades diferentes, ou seja, estão em diferentes escalas. Então, precisaremos padronizá-las. Para isso, trabalharemos com a matriz de correlações.
+
+```{r}
+# PCA com matriz de correlação
+pca = PCA(dados,scale.unit = T,graph = F)
+pca
+```
+
+<br>
+
+### a) Obtenha a matriz de correlação R dos dados e seus autovalores e autovetores
+
+Matriz de correlação
+
+```{r}
+cor(dados)
+```
+
+Autovalores e autovetores
+
+```{r}
+# Autovalores
+pca$eig[,1]
+
+# Autovetores
+pca$svd$V
+```
+<br>
+
+### b) Determine as duas primeiras componentes principais para as variáveis padronizadas.
+
+```{r}
+# Os coeficientes das CPs são os autovetores correspondentes a cada uma
+round(pca$svd$V[,1:2],2)
+```
+Seja $Z_i$ a variável $X_i$ padronizada. As duas primeiras componentes principais são:
+
+$Y_1 = 0.37Z_1 + 0.37Z_2 + 0.38Z_3 + 0.38Z_4 + 0.39Z_5 + 0.39Z_6 + 0.37Z_7$
+$Y_2 = 0.49Z_1 + 0.54Z_2 + 0.25Z_3 - 0.16Z_4 - 0.36Z_5 - 0.35Z_6 - 0.37Z_7$
+
+<br>
+
+### c) Prepare uma tabela mostrando os coeficientes de correlação entre cada componente principal e as variáveis padronizadas, como também as proporções acumuladas da variância total, explicada pelas duas componentes.
+
+```{r}
+summary(pca,ncp = 2)
+```
+
+### d) Interprete as duas componentes princiapis obtidas nos itens acima.
+
+As duas primeiras componentes principais obitdas representam aproximadamente $92.28\%$ da variância total do vetor original X.
+
+<br>
+
+### e) Forneça uma classificação (ranking) dos países, a partir de seus scores sobre a primeira componente principal. Essa classificação corresponde com a sua noção intuitiva da excelência atlética dos países?
+
+Ranking
+```{r}
+score = facto_summarize(pca, "ind")
+score %>% arrange(score$Dim.1)
+```
+O ranking obtido corresponde com minha noção intuitiva de excelência atlética dos países, em que EUA, por exemplo, estariam entre os melhores colocados.
