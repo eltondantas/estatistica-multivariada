@@ -1,0 +1,410 @@
+---
+title: "Estatística Multivariada"
+subtitle: "2ª Lista de Exercícios"
+author: "Elton Dantas de Oliveira Mesquita"
+output:
+  html_document:
+    theme: readable
+    highlight: breezedark
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+<style> body {text-align: justify} </style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Questão 1 - Objetivos da ACP
+
+O objetivo da Análise de Componentes Principais é explicar a estrutura de variância e covariância de um vetor aleatório, composto de p variáveis aleatórias, através de combinações lineares das variáveis originais. Em geral, pode-se dizer também que o objetivo da ACP é obter redução do número de variáveis a serem avaliadas e interpretar as combinações lineares construídas.
+
+<br>
+
+##  Questão 2 - Componentes Principais
+
+Componentes principais são combinações lineares (não correlacionadas) de p variáveis aleatórias originais de um vetor aleatório.
+
+<br>
+
+## Questão 3 - Autovalores e Autovetores
+
+Em ACP, os autovalores representam as variâncias das componentes principais e os autovetores, os coeficientes de cada uma dessas componentes.
+
+<br>
+
+## Questão 4 - Padronização das Variáveis
+
+As componentes principais obtidas através da matriz de covariâncias são influenciadas pelas variáveis de maior variância, sendo, portanto, de pouca utilidade nos casos em que existe uma discrepância muito acentuada entre as variâncias. A discrepância é muitas vezes causada pela diferença das unidades de medidas (escalas) das variáveis. Este problema pode ser amenizado se uma transformação for efetuada nos dados originais, de modo a quilibrar os valores de variância ou colocar os dados na mesma escala de medida. Uma das transformações mais comuns é aquela em que cada variável é padronizada pela sua média e desvio padrão, sendo a ACP aplicada à matriz de covariâncias das variáveis padronizadas. Este procedimento equivale a obter-se as componentes principais através da matriz de correlação das variáveis originais.
+
+<br>
+
+## Questão 5 - Escores de uma CP
+
+Em termos práticos, para se fazer uso das componentes principais amostrais consideradas mais relevantes na análise de dados, é necessário calcular os seus valores numéricos para cada elemento amostral. Esses valores são os escores das componentes.
+
+<br>
+
+## Questão 6
+
+Autovalores
+```{r}
+cps = c("CP1","CP2","CP3","CP4","CP5","CP6","CP7")
+
+autoval = matrix(c(4.58,1.51,0.39,0.36,0.12,0.03,0.01),byrow=T,nrow=1)
+
+colnames(autoval) = cps
+
+autoval
+```
+
+Autovetores
+```{r}
+variaveis = c("Calorias","Carboidratos","Gorduras","Gordura Saturada",
+              "Gordura Trans","Proteínas", "Sódio")
+
+autovet = matrix(c(-0.45,0.14,-0.08,-0.26,0.09,-0.22,0.8,
+                   -0.14,0.74,-0.24,-0.4,-0.32,0.22,-0.26,
+                   -0.46,-0.03,0.08,-0.19,0.28,-0.64,-0.51,
+                   -0.41,-0.32,0.08,-0.33,0.37,0.68,-0.13,
+                   -0.41,-0.26,0.41,0.06,-0.77,0.03,-0.02,
+                   -0.38,-0.16,-0.77,0.47,-0.12,0.06,-0.08,
+                   -0.3,0.49,0.4,0.64,0.27,0.17,0),
+                 byrow = T, nrow = 7)
+
+rownames(autovet) = variaveis
+colnames(autovet) = cps
+
+autovet
+```
+
+### a)
+
+Porcentagem de variação de cada componente principal.
+```{r}
+perc = autoval/sum(autoval) * 100
+perc
+```
+
+Porcentagens de variação acumuladas das componentes
+```{r}
+perc_acum = cumsum(perc)
+perc_acum
+```
+
+<br>
+
+### b)
+
+A importância das CP pode ser visualizada usando o screeplot
+```{r}
+plot = barplot(autoval, names.arg = 1:length(autoval),
+        xlab = "Componente", ylab = "Variância (Autovalor)") + abline(h=1)
+```
+
+
+As duas primeiras componentes principais representam 87% da variação total das variáveis originais. Além disso, baseando-se no critério de Kaiser, temos que os autovalores associados às demais componentes são menores que 1. Então, considerando esses fatores, podemos dizer que as duas primeiras componentes são suficientes.
+
+<br>
+
+### c)
+
+P/ a correlação cp x var
+
+Matriz de cov a partir dos autoval e autvet -> $A = S\Lambda S^-1$  
+
+## Questão 7
+
+Matriz de covariâncias
+```{r}
+S = matrix(c(5,2,
+             2,2), byrow=T, nrow=2)
+S
+```
+
+### a)
+
+Componentes Principais para a matriz de covariâncias
+```{r}
+X = c("X1","X2")
+cps = c("Y1","Y2")
+
+# Encontrando os autovalores e autovetores
+auto = eigen(S)
+autoval = matrix(auto$values,nrow=1)
+colnames(autoval) = cps
+autovet = auto$vectors
+colnames(autovet) = cps
+rownames(autovet) = X
+
+autoval
+round(autovet,2)
+```
+
+$Y_1 = -0.89X_1 - 0.45 X_1$
+
+$Y_2 = 0.45X_1 - 0.89X_2$
+
+Proporção da variância total explicada pelas componentes principais
+```{r}
+perc = autoval/sum(autoval)*100
+perc
+```
+
+Percebe-se que, pela sua proporção de variância total, a primeira componente principal representa quase 86% da variância total das variáveis originais.
+
+<br>
+
+### b)
+
+Matriz de correlação P
+```{r}
+# Encontrando a matriz V^(1/2)
+sqrtV = diag(sqrt(diag(S)))
+
+# Encontrando a matriz P
+sqrtV.inv = solve(sqrtV)
+P = sqrtV.inv %*% S %*% sqrtV.inv
+P
+```
+
+
+Componentes principais da matriz de correlações P
+```{r}
+# Encontrando os autovalores e autovetores
+auto = eigen(P)
+autoval = matrix(auto$values,nrow=1)
+colnames(autoval) = cps
+autovet = auto$vectors
+colnames(autovet) = cps
+rownames(autovet) = X
+
+autoval
+round(autovet,2)
+```
+
+$Y_1 = -0.71X_1 - 0.71X_2$
+
+$Y_2 = 0.71X_1 - 0.71X_2$
+
+
+Proporção da variância total explicadas pelas componentes principais
+```{r}
+perc = autoval/sum(autoval)*100
+perc
+```
+
+<br>
+
+### Questão 8
+
+Em anexo, feita à mão.
+
+<br>
+
+## Questão 9
+
+Pacotes e Dados
+```{r}
+library(FactoMineR)
+library(factoextra)
+library(psych)
+library(ggcorrplot)
+library(dplyr)
+
+data(decathlon)
+dim(decathlon)
+dados = decathlon[1:10]
+```
+
+
+### a) Breve análise exploratória dos dados
+
+Algumas medidas resumo
+```{r}
+describe(dados)
+```
+
+Matriz de correlação
+```{r}
+# Correlation matrix
+matcor = round(cor(dados), 2)
+matcor
+
+# Plot
+ggcorrplot(matcor, hc.order = TRUE, 
+           type = "lower", 
+           lab = TRUE, 
+           lab_size = 3, 
+           method="circle", 
+           colors = c("darkred", "white", "darkgreen"), 
+           title="Correlograma", 
+           ggtheme=theme_bw)
+```
+
+
+Box-plot dos dados
+```{r}
+# Dos dados originais
+boxplot(dados)
+
+# Dos dados padronizados
+boxplot(scale(dados))
+```
+
+Pelas medidas-resumo obtidas e a visualização dos box-plots dos dados originais, percebe-se que as variáveis estão medidas em unidades diferentes e em escalas também diferentes de acordo com o tipo de prova. Sendo assim, será necessário padronizarmos os dados trabalhando com a matriz de correlações ao invés da matriz de covariâncias.
+
+
+### b) Análise de Componentes Principais
+
+```{r}
+pca = PCA(dados,scale.unit = T,graph = F)
+pca
+```
+
+
+```{r}
+summary(pca, ncp = 10)
+```
+
+
+A importância dos CP pode ser visualizada usando o screeplot
+```{r}
+plot = barplot(pca$svd$vs^2, names.arg = 1:length(dados),
+        xlab = "Componente", ylab = "Variância (Autovalor)") + abline(h=1)
+```
+
+As quatro primeiras componentes principais representam quase 75% da variação total das variáveis originais. Além disso, baseando-se no critério de Kaiser, temos que os autovalores associados às demais componentes são menores que 1. Então, considerando esses fatores, selecionamos as quatro componentes principais.
+
+
+### c) Ranking dos atletas
+
+Ranking proposto a partir da primeira componente principal.
+
+```{r}
+
+score = facto_summarize(pca, "ind")
+ranking = score %>% arrange(desc(score$Dim.1))
+ranking
+```
+Visualização do ranking
+```{r}
+barplot(ranking$Dim.1,
+        ylim = c(-4,6),
+        names.arg = ranking$name,
+        main = "Ranking da CP1", ylab = "Escore",
+        las = 2)
+```
+
+## Questão 10
+
+Vetor de médias
+```{r}
+mu = c(95.52,164.38,55.69,93.39,17.98,31.13)
+```
+
+Matriz de covariâncias
+```{r}
+S = matrix(c(3266.46,1343.97,731.54,1175.50,162.68,238.37,
+             1343.97,721.91,324.25,537.35,80.17,117.73,
+             731.54,324.25,179.28,281.17,39.15,56.80,
+             1175.50,537.35,281.17,474.98,63.73,94.85,
+             162.68,80.17,39.15,63.73,9.95,13.88,
+             238.37,117.73,56.80,94.85,13.88,21.26),byrow=T,nrow=6)
+S
+```
+
+### a) Componentes Principais a partir da matriz de covariâncias
+
+Autovalores e autovetores da matriz de covariâncias
+```{r}
+auto = eigen(S)
+autoval = matrix(auto$values,nrow=1)
+autovet = auto$vectors
+
+variaveis = c("X1","X2","X3","X4","X5","X6")
+cps = c("CP1","CP2","CP3","CP4","CP5","CP6")
+
+colnames(autoval) = cps
+rownames(autovet) = variaveis
+colnames(autovet) = cps
+```
+
+
+Componentes Principais
+```{r}
+autovet
+```
+
+Porcentagens de variação das componentes
+```{r}
+perc = autoval/sum(autoval)*100
+perc
+```
+
+Porcentagens de variação acumuladas das componentes
+```{r}
+perc_acum = cumsum(perc)
+perc_acum
+```
+
+A primeira componente explica 95.83% da variância total amostral.
+
+<br>
+
+### b) Componentes principais a partir da matriz de covariâncias
+
+Matriz de correlações P
+```{r}
+# Encontrando a matriz V^(1/2)
+sqrtV = diag(sqrt(diag(S)))
+
+# Encontrando a matriz P
+sqrtV.inv = solve(sqrtV)
+P = sqrtV.inv %*% S %*% sqrtV.inv
+P
+```
+
+Autovalores e autovetores da matriz de correlações
+```{r}
+auto = eigen(P)
+autoval = matrix(auto$values,nrow=1)
+autovet = auto$vectors
+
+variaveis = c("X1","X2","X3","X4","X5","X6")
+cps = c("CP1","CP2","CP3","CP4","CP5","CP6")
+
+colnames(autoval) = cps
+rownames(autovet) = variaveis
+colnames(autovet) = cps
+```
+
+
+Componentes principais
+```{r}
+autovet
+```
+
+Porcentagens de variação das componentes
+```{r}
+perc = autoval/sum(autoval)*100
+perc
+```
+
+Porcentagens de variação acumuladas das componentes
+```{r}
+perc_acum = cumsum(perc)
+perc_acum
+```
+
+A primeira componente principal explica 94% da variância total dos dados.
+
+<br>
+
+### c) Similaridades e diferenças entre as análises
+
+Os resultados foram similares para as duas análises. A primeira componente em cada uma delas representam quase que toda a variação total dos dados. As duas análises diferem um pouco quanto à segunda componente em diante, mas todas essas últimas explicam muito pouco a variância total da amostra.

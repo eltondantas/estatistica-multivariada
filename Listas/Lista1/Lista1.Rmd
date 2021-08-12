@@ -1,0 +1,738 @@
+---
+title: "Estatística Multivariada"
+subtitle: "1ª Lista de Exercícios"
+author: "Elton Dantas de Oliveira Mesquita"
+output:
+  html_document:
+    theme: readable
+    highlight: breezedark
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+<style> body {text-align: justify} </style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Questão 1
+
+Considerando o seguinte conjunto de observações das variáveis $X_1$ e $X_2$
+
+```{r}
+X1 = c(3,4,2,6,8,2,5)
+X2 = c(5,5.5,4,7,10,5,7.5)
+
+X = matrix(c(X1,X2),ncol=2)
+```
+
+Calcule estimativas para o vetor de médias, para a matriz de covariâncias e para a matriz de correlação.
+
+```{r}
+# Vetor de médias
+mu = apply(X, MARGIN = 2, FUN = mean)
+mu
+
+# Matriz de covariâncias
+S = cov(X)
+S
+
+# Matriz de correlação
+R = cor(X)
+R
+```
+<br>
+
+## Questão 2
+
+Considerando o seguinte conjunto de observações das variáveis $X_1$, $X_2$ e $X_3$
+
+```{r}
+X1 = c(9,2,6,5,8)
+X2 = c(12,8,6,4,10)
+X3 = c(3,4,0,2,1)
+
+X = matrix(c(X1,X2,X3),ncol=3)
+```
+
+Calcule estimativas para o vetor de médias, para a matriz de covariâncias e para a matriz de correlação.
+
+Vetor de médias
+```{r}
+mu = apply(X, MARGIN = 2, FUN = mean)
+mu
+```
+
+Matriz de covariâncias
+```{r}
+S = cov(X)
+S
+```
+
+Matriz de correlação
+```{r}
+R = cor(X)
+R
+```
+
+<br>
+
+## Questão 3
+
+Considere a matriz
+
+$$
+A = \begin{bmatrix}
+      9 & -2 \\
+     -2 & 6
+    \end{bmatrix}
+$$
+
+<br>
+
+### a) A matriz $A$ é simétrica?
+
+Seja a matriz
+```{r}
+A = matrix(c(9,-2,-2,6),ncol=2)
+A
+```
+
+e sua transposta
+```{r}
+TA = t(A)
+TA
+```
+
+Temos que
+```{r}
+A == TA
+```
+
+Como $A = A´$, a matriz $A$ é simétrica.
+
+<br>
+
+### b) Mostre que $A$ é positiva definida.
+
+```{r}
+eA = eigen(A)
+
+# Auto valores de A
+eA$values > 0
+```
+
+Como a matriz $A$ é simétrica e seus autovalores são todos positivos, então $A$ é positiva definida.
+
+<br>
+
+### c) Determine os autovalores e autovetores da matriz $A$.
+
+Autovalores
+```{r}
+eA$values
+```
+
+Autovetores
+```{r}
+eA$vectors
+```
+
+<br>
+
+### d) Encontre $A^{-1}$.
+
+```{r}
+IA = solve(A)
+IA
+```
+
+<br>
+
+### e) Encontre os autovalores e autovetores de $A^{-1}$.
+
+```{r}
+e.IA = eigen(IA)
+```
+
+Autovalores
+
+```{r}
+e.IA$values
+```
+
+Autovetores
+
+```{r}
+e.IA$vectors
+```
+
+<br>
+
+### f) Determine a decomposição espectral de $A$.
+
+Pelo teorema da decomposição espectral, a matriz $A$ pode ser escrita como
+
+$$
+  A = O \Lambda O'
+$$
+
+```{r}
+O = eA$vectors
+Lmbd = diag(eA$values)
+
+O%*%Lmbd%*%t(O)
+
+O%*%Lmbd%*%t(O) == A
+```
+
+<br>
+
+## Questão 4
+
+Considere a seguinte matriz de covariâncias associada a uma variável $X$.
+
+$$
+\Sigma = \begin{bmatrix}
+      25 & -2 & 4 \\
+      -2 &  4 & 1 \\
+       4 &  1 & 9
+    \end{bmatrix}
+$$
+```{r}
+# Matriz de covariâncias
+S = matrix(c(25, -2, 4,
+             -2, 4, 1,
+             4, 1, 9), nrow = 3)
+S
+```
+
+<br>
+
+### a) Encontre as matrizes $P_x$ e $V^{\frac{1}{2}}$ tais que $V^{\frac{1}{2}}P_xV^{\frac{1}{2}} = \Sigma$.
+
+Matriz $V^{\frac{1}{2}}$
+
+```{r}
+sqrtV = diag(sqrt(diag(S)))
+sqrtV
+```
+
+Matriz $P_x$ (matriz de correlações)
+
+```{r}
+sqrtV.inv = solve(sqrtV)
+
+Px = sqrtV.inv %*% S %*% sqrtV.inv
+Px
+```
+Verificando a igualdade $V^{\frac{1}{2}}P_xV^{\frac{1}{2}} = \Sigma$
+
+```{r}
+sqrtV %*% Px %*% t(sqrtV) == S
+```
+
+<br>
+
+### b) Encontre a média e a variância das seguintes combinações lineares:
+
+#### i\. $X_1 - 2X_2$
+  
+  $E[X_1 - 2X_2] = E[X_1] - 2E[X_2] = \mu_1 - 2\mu_2$
+  
+  $Var(X_1 - 2X_2) = a^\top \Sigma a$, em que $a^\top = [1,-2,0]$
+
+```{r}
+a = c(1,-2,0)
+
+Var = t(a)%*%S%*%a
+Var
+```
+
+#### ii\. $X_1 + X_2 + X_3$
+
+  $E[X_1 + X_2 + X_3] = E[X_1] + E[X_2] + E[X_3] = \mu_1 + \mu_2 + \mu_3$
+  
+  $Var(X_1 - 2X_2) = a^\top \Sigma a$, em que $a^\top = [1,1,1]$
+
+```{r}
+a = c(1,1,1)
+
+Var = t(a)%*%S%*%a
+Var
+```
+
+#### iii\. $3X_1 - 4X_2 + 3X_3$
+
+  $E(3X_1 - 4X_2 + 3X_3) = 3E(X_1) - 4E(X_2) + 3E(X_3) = 3\mu_1 - 4\mu_2 + 3\mu_3$
+  
+  $Var(X_1 - 2X_2) = a^\top \Sigma a$, em que $a^\top = [3,-4,3]$
+
+```{r}
+a = c(3,-4,3)
+
+Var = t(a)%*%S%*%a
+Var
+```
+
+<br>
+
+## Questão 5
+
+Considere o vetor aleatório $X^\top = (X_1,X_2,X_3,X_4)$ com vetor de médias $\mu^\top = (4,3,2,1)$ e matriz de covariâncias
+
+$$
+\Sigma = \begin{bmatrix} 3 & 0 & 2 & 2\\
+                         0 & 1 & 1 & 0\\
+                         2 & 1 & 9 & -2\\
+                         2 & 0 & -2 & 4
+         \end{bmatrix}.
+$$
+
+```{r}
+mu = c(4,3,2,1)
+
+S = matrix(c(3,0,2,2,
+             0,1,1,0,
+             2,1,9,-2,
+             2,0,-2,4),byrow=T,nrow=4)
+```
+
+
+Particionando $X$ como
+
+$$
+X = \begin{bmatrix} X_1 \\
+                    X_2 \\
+                    \hline
+                    X_3 \\
+                    X_4
+         \end{bmatrix}
+  = \begin{bmatrix} X^{(1)} \\
+                    \hline
+                    X^{(2)}
+    \end{bmatrix},
+$$
+
+sendo $A = \begin{bmatrix} 1 & 2 \end{bmatrix}$ e $B = \begin{bmatrix} 1 & -2 \\ 2 & -1 \end{bmatrix}$ , e considerando as combinações lineares $AX^{(1)}$ e $BX^{(2)}$.
+
+```{r}
+A = matrix(c(1,2),byrow=T, nrow=1)
+
+B = matrix(c(1,-2,
+             2,-1),byrow = T, nrow=2)
+```
+
+
+Encontre:
+
+### a) $E(X^{(1)})$
+
+```{r}
+mu_X1 = mu[1:2]
+mu_X1
+```
+
+### b) $E(AX^{(1)})$
+
+```{r}
+mu_AX1 = A %*% mu_X1
+mu_AX1
+```
+### c) $Cov(X^{(1)})$
+
+```{r}
+cov_X1 = matrix(c(3,0,
+                  0,1), byrow=T, nrow=2)
+cov_X1
+```
+
+### d) $Cov(AX^{(1)})$
+
+```{r}
+cov_AX1 = A %*% cov_X1 %*% t(A)
+cov_AX1
+```
+
+### e) $E(X^{(2)})$
+
+```{r}
+mu_X2 = mu[3:4]
+mu_X2
+```
+### f) $E(BX^{(2)})$
+
+```{r}
+mu_BX2 = B %*% mu_X2
+mu_BX2
+```
+
+### g) $Cov(X^{(2)})$
+
+```{r}
+cov_X2 = matrix(c(9,-2,
+                  -2,4), byrow=T, nrow=2)
+cov_X2
+```
+
+### h) $Cov(BX^{(2)})$
+
+```{r}
+cov_BX2 = B %*% cov_X2 %*% t(B)
+cov_BX2
+```
+
+### i) $Cov(X^{(1)},X^{(2)})$
+
+```{r}
+cov_X1_X2 = matrix(c(2,2,
+                    1,0), byrow=T, nrow=2)
+cov_X1_X2
+```
+
+### j) $Cov(AX^{(1)},BX^{(2)})$
+
+```{r}
+cov_AX1_AX2 = (A) %*% cov_X1_X2 %*% t(B)
+cov_AX1_AX2
+```
+<br>
+
+## Questão 6
+
+Considere a distribuição normal bivariada com parâmetros $\mu_1 = 0$, $\mu_2 = 2$, $\sigma_{11} = 2$, $\sigma_{22} = 1$ e $\rho_{12} = 0.5$.
+
+Vetor de médias $\mu$
+```{r}
+mu = c(0,2)
+```
+
+Matriz de covariâncias $\Sigma$
+```{r}
+S = matrix(c(2, sqrt(2)/2,
+             sqrt(2)/2,1), byrow=T, nrow=2)
+S
+```
+
+
+### a) Escreva a densidade dessa normal bivariada.
+
+Seja
+
+
+$$
+X = \begin{pmatrix}
+      x_1 \\
+      x_2
+    \end{pmatrix}
+    \sim
+    N_2\left(\mu = \begin{bmatrix}
+                      0 \\
+                      2
+                   \end{bmatrix},
+           \Sigma = \begin{bmatrix}
+                      2 & \frac{\sqrt{2}}{2} \\
+                      \frac{\sqrt{2}}{2} & 1
+                    \end{bmatrix}\right)
+$$
+
+A função densidade de $X$ é dada por
+
+
+\begin{aligned}
+
+f(x_1,x_2) &= f(X) = \frac{1}{2\pi|\Sigma|^{1/2}} \times \exp\left\{-\frac{1}{2}(X-\mu)^\top\Sigma^{-1}(X-\mu)\right\} \\
+&=
+\frac{1}{2\pi\sqrt{\sigma_{11}\sigma_{22}(1-\rho_{12}^2)}} \times \exp\left\{-\frac{1}{2(1-\rho_{12}^2)}\left[\left(\frac{x_1-\mu_1}{\sqrt{\sigma_{11}}}\right)^2+\left(\frac{x_2-\mu_2}{\sqrt{\sigma_{22}}}\right)^2-2\rho_{12}\frac{(x_1-\mu_1)(x_2-\mu_2)}{\sqrt{\sigma_{11}\sigma_{22}}}\right]\right\} \\
+&=
+\frac{1}{2\pi\sqrt{\frac{3}{2}}} \times \exp\left\{-\frac{2}{3}\left[\frac{x_1^2}{2}+(x_2-2)^2-\frac{x_1(x_2-2)}{\sqrt{2}}\right]\right\}
+
+\end{aligned}
+
+
+### b) Escreva a expressão do quadrado da distância de Mahalanobis.
+
+A quantidade $(x-\mu)'\Sigma^{-1}(x-\mu)$ é referida como a distância de Mahalanobis (1936) do vetor $x$ ao vetor de médias $\mu$. Ela também é denominada de distância padronizada ou distância estatística.
+
+
+\begin{aligned}
+
+(X-\mu)'\Sigma^{-1}(X-\mu) &= \frac{1}{1-\rho_{12}^2}\left[\left(\frac{x_1-\mu_1}{\sqrt{\sigma_{11}}}\right)^2+\left(\frac{x_2-\mu_2}{\sqrt{\sigma_{22}}}\right)^2-2\rho_{12}\frac{(x_1-\mu_1)(x_2-\mu_2)}{\sqrt{\sigma_{11}\sigma_{22}}}\right] \\
+&= \frac{4}{3}\left[\frac{x_1^2}{\sqrt{2}}+(x_2 - 2)^2 - \frac{x_1(x_2-2)}{\sqrt{2}}\right]
+
+\end{aligned}
+
+
+### c) Determine a equação do contorno de probabilidade para $\alpha = 50\%$.
+
+Quantil da $\chi_{(2;50\%)}^2$
+```{r}
+round(qchisq(p = 0.5, df = 2),2)
+```
+
+Equação do contorno de probabilidade para $\alpha = 50\%$
+
+
+\begin{aligned}
+
+(X-\mu)'\Sigma^{-1}(X-\mu) &\leq \chi_{(2;50\%)}^2 \\
+\frac{4}{3}\left[\frac{x_1^2}{\sqrt{2}}+(x_2 - 2)^2 - \frac{x_1(x_2-2)}{\sqrt{2}}\right]
+&\leq 1,39 
+
+\end{aligned}
+
+
+Desenho do contorno de probabilidade para $\alpha=50\%$
+```{r}
+plot(ellipse::ellipse(S,centre=c(2,0),level=0.5,npoints=100),
+     type="l",asp=0, lwd=2, col="darkblue")
+points(c(2,0),pch=16)
+segments(x0=0, x1=2, y0=0, lty=2)
+segments(y0=-1.5, y1=0, x0=2, lty=2)
+```
+
+<br>
+
+## Questão 7
+
+Vetor de médias $\mu$
+```{r}
+mu = c(2,-3,1)
+mu
+```
+
+Matriz de covariâncias $\Sigma$
+```{r}
+S = matrix(c(1,1,1,
+             1,3,2,
+             1,2,2), byrow=T, nrow=3)
+S
+```
+
+### a) Encontre a distribuição de $3X_1 - 2X_2 + 3X_3$
+
+Seja $Y = 3X_1 - 2X_2 + 3X_3$ e $a^\top = [3,-2,3]$
+
+Vetor de constantes
+
+```{r}
+a = c(3,-2,3)
+```
+
+Vetor de médias de Y
+
+```{r}
+muY = t(a) %*% mu
+muY
+```
+
+Matriz de covariâncias de Y
+
+```{r}
+SY = t(a) %*% S %*% a
+SY
+```
+
+Então $Y = 3X_1 - 2X_2 + 3X_3 = [3,-2,3]X$ e, assim, $Y \sim N(15,21)$.
+
+<br>
+
+### b) Encontre a distribuição do vetor $Z^\top = [X_1,X_2]$
+
+Seja $Z = \begin{pmatrix}X_1 \\ X_2 \end{pmatrix}$ um subconjunto de $X$,
+
+Vetor de médias de Z
+```{r}
+muZ = mu[1:2]
+muZ
+```
+Matriz de covariâncias de Z
+```{r}
+SZ = matrix(c(1,1,
+              1,3),byrow=T,nrow=2)
+SZ
+```
+Então, $Z \sim N_2\left(\mu^\top=[2,-3],\Sigma=\begin{bmatrix} 1 & 1 \\ 1 & 3\end{bmatrix}\right).$
+
+<br>
+
+### c) Calcule a $Cov(Z,X3)$
+
+Seja
+
+$$
+Y = \begin{bmatrix} Z \\ \hline X_3 \end{bmatrix} = \begin{bmatrix} X_1 \\ X_2 \\ \hline X_3 \end{bmatrix}.
+$$
+
+Temos que
+
+$$
+Cov(Y) = \left[\begin{array}{cc|c} 1 & 1 & 1 \\ 1 & 3 & 2 \\ \hline 1 & 2 & 2 \end{array}\right].
+$$
+
+Então,
+
+$$
+Cov(Z,X_3) = Cov((X_1,X_2),X_3) = \begin{bmatrix} 1 \\ 2\end{bmatrix}.
+$$
+
+<br>
+
+## Questão 8
+
+Seja $X_1 \sim N(0,1)$. Temos que, 
+
+
+\begin{aligned}
+F_{X_1}(x_1) &= P(X_1 \leq x_1) \\
+             &= P(X_1 < -1) + P(-1 < X_1 < x_1)
+\end{aligned}
+
+
+e por simetria,
+
+$$P(-1 < X_1 < x_1) = P(-x_1 < X_1 < 1)$$.
+
+Quando $-1 < x_2 < 1$,
+
+
+\begin{aligned}
+F_{X_2}(x_2) &= P(X_2 \leq x_2) \\
+             &= P(X_2 < -1) + P(-1 < X_2 < x_2) \\
+             &= P(X_1 < -1) + P(-1 < -X_1 < x_2) \\
+             &= P(X_1 < -1) + P(-x_2 < X_1 < 1)
+
+\end{aligned}
+
+
+Mas, por simetria,
+
+$$P(-x_2 < X_1 < 1) = P(-1 < X_1 < x_2)$$
+Assim,
+
+
+\begin{aligned}
+F_{X_2}(x_2) &= P(X_2 \leq x_2) \\
+             &= P(X_1 < -1) + P(-1 < X_1 < x_2) \\
+             &= P(X_1 < x_2) \\
+             &= F_{X_1}(x_2)
+\end{aligned}
+
+
+que é uma função distribuição de uma normal padrão. Ou seja, $X_2$ também tem densidade normal padrão.
+
+<br>
+
+## Questão 9
+
+Os dados abaixo mostram a idade ($X_1$ em anos) e o preço de venda ($X_2$ em unidades de $US\$ 1000$) para $n = 10$ carros usados.
+
+```{r}
+x1 = c(3,5,5,7,7,7,8,9,10,11)
+x2 = c(2.3,1.9,1,0.7,0.3,1,1.05,0.45,0.7,0.3)
+X = matrix(c(x1,x2),ncol=2)
+X
+```
+
+Desenhe o contorno de probabilidade de $90\%$ e conte quantas observações estão no interior do contorno.
+
+Vetor de médias $\mu$ e matriz de covariâncias $\Sigma$
+
+```{r}
+# Vetor de médias
+mu = apply(X,2,mean)
+mu
+
+# Matriz de covariâncias
+S = cov(X)
+S
+```
+
+Desenho do contorno de probabilidade de $90\%$
+
+```{r}
+plot(ellipse::ellipse(S,centre=mu,level=0.9,npoints=100),
+     type="l",asp=0, lwd=2, col="darkblue")
+points(X,pch=16)
+```
+
+Todas as 10 observações estão dentro do contorno de probabilidade.
+
+<br>
+
+## Questão 10
+
+Sejam $X \sim N_3(\mu,\Sigma)$, com $\mu^\top = [-3,1,4]$ e $\Sigma = \begin{bmatrix} 1 & -2 & 0 \\ -2 & 5 & 0 \\ 0 & 0 & 2 \end{bmatrix}$.
+
+Qual(is) das seguintes variáveis são independentes? Justifique.
+
+Para essa questão, utilizaremos a propriedade da distribuição normal multivariada de que covariância zero implica que as suas componentes são independentemente distribuídas.
+
+### a) $X_1$ e $X_2$
+
+Seja $Y = \begin{bmatrix} X_1 \\ X_2 \end{bmatrix}$.
+Temos que $Cov(Y) = \begin{bmatrix} 1 & -2 \\ -2 & 5 \end{bmatrix}$.
+
+Assim, $Cov(X_1,X_2) = \sigma_{12} = -2\neq 0$.
+
+Portanto, $X_1$ e $X_2$ não são independentes.
+
+<br>
+
+### b) $X_2$ e $X_3$
+
+Seja $Y = \begin{bmatrix} X_2 \\ X_3 \end{bmatrix}$.
+Temos que $Cov(Y) = \begin{bmatrix} 5 & 0 \\ 0 & 2 \end{bmatrix}$.
+
+Assim, $Cov(X_1,X_2) = \sigma_{23} = 0$.
+
+Portanto, $X_2$ e $X_3$ são independentes.
+
+<br>
+
+### c) $(X_1,X_2)$ e $X_3$
+
+Seja $Y = \begin{bmatrix} X_1 \\ X_2 \\ \hline X_3 \end{bmatrix}$.
+Temos que $Cov(Y) = \left[\begin{array}{cc|c} 1 & -2 & 0 \\ -2 & 5 & 0 \\ \hline 0 & 0 & 2 \end{array}\right]$.
+
+Assim, $Cov((X_1,X_2),X_3) = \begin{bmatrix}0 \\ 0\end{bmatrix}$. Ou seja, $\sigma_{13} = \sigma_{23} = 0$.
+
+Portanto, $(X_1,X_2)$ e $X_3$ são independentes.
+
+<br>
+
+### d) $\frac{X_1+X_2}{2}$ e $X_3$
+
+Seja
+
+$$
+\begin{bmatrix} \frac{X_1+X_2}{2} \\ X_3 \end{bmatrix}
+=
+\begin{bmatrix} \frac{1}{2} & \frac{1}{2} & 0 \\ 0 & 0 & 1 \end{bmatrix}
+\begin{bmatrix} X_1 \\ X_2 \\ X_3 \end{bmatrix}
+= AX
+$$
+
+Então
+
+$$
+Cov(\frac{X_1+X_2}{2},X_3) = Cov(AX) = A \Sigma A^\top
+$$
+
+Encontrando a matriz de covariâncias $A \Sigma A^\top$
+```{r}
+A = matrix(c(0.5,0.5,0,
+             0,0,1), byrow=T, nrow=2)
+
+S = matrix(c(1,-2,0,
+             -2,5,0,
+             0,0,2),byrow=T,nrow=3)
+
+AStA = A %*% S %*% t(A)
+AStA
+```
+Como na matriz $A \Sigma A^\top$ encontrada acima $\sigma_{12} = \sigma_{21} = 0$, as variáveis $\frac{X_1+X_2}{2}$ e $X_3$ são independentes.
