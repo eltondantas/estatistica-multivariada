@@ -1,0 +1,32 @@
+---
+title: "Análise de Componentes Principais (PCA)"
+author: "Elton Dantas de Oliveira Mesquita"
+output:
+  html_document:
+    theme: readable
+    highlight: breezedark
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+<style> body {text-align: justify} </style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Introdução
+
+O objetivo da técnica de análise de componentes principais (PCA) é explicar a estrutura de variância e covariância de um vetor aleatório, composto de p-variáveis aleatórias, através da contrução de combinações lineares das variáveis originais. Estas combinações lineares são chamadas de componentes principais e são não correlacionadas entre si. Se temos p-variáveis originais, é possível obter-se p componentes principais. No entanto, em geral, deseja-se obter a redução do número de variáveis a serem avaliadas e a interpretação das combinações lineares contruídas. Ou seja, a informação contida nas p-variáveis originais é substituída pela informação contida em k (k < p) componentes principais não correlacionadas. Desta forma, o sistema de variabilidade do vetor aleatório composto das p-variáveis originais é aproximado pelo sistema de variabilidade  do vetor aleatório que contém as k componentes principais. A qualidade da aproximação depende do número de componentes mantidas no sistema e pode ser medida através da avaliação da proporção de variância total explicada por essas.
+
+A obtenção das componentes principais envolve a decomposição da matriz de covariâncias do vetor aleatório de interesse. Caso seja feita alguma transformação deste vetor aleatório, as componentes deverão ser determinadas utilizando-se a matriz de covariâncias relativa ao vetor transformado. Uma transformação muito usual é a padronização das variáveis do vetor pelas respectivas médias e desvios padrões, gerando-se novas variáveis centradas em zero e com variâncias iguais a 1. Neste caso, as componentes principais são determinadas a partir da matriz de covariâncias das variáveis originais padronizadas, o que é equivalente a extrair-se as componentes principais utilizando-se a matriz de correlação das variáveis originais.
+
+Uma vez determinadas as componentes principais, os seus valores numéricos, denominados escores, podem ser clculados para cada elemento amostral. Deste modo, os valores de cada componente podem ser analisados, usando-se técnicas estatísticas usuais como análise de variância e análise de regressão, dentre outras.
+
+Observação: Quando a distribuição de probabilidades do vetor aleatório em estudo é normal p-variada, as componentes principais, além de não correlacionadas, são independentes e têm distribuição normal. Entretanto, a suposição de normalidade não é requisito necessário para que a técnica de PCA possa ser realizada.
+
+<br>
+
