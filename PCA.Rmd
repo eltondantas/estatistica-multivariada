@@ -24,7 +24,7 @@ O objetivo da técnica de análise de componentes principais (PCA) é explicar a
 
 A obtenção das componentes principais envolve a decomposição da matriz de covariâncias do vetor aleatório de interesse. Caso seja feita alguma transformação deste vetor aleatório, as componentes deverão ser determinadas utilizando-se a matriz de covariâncias relativa ao vetor transformado. Uma transformação muito usual é a padronização das variáveis do vetor pelas respectivas médias e desvios padrões, gerando-se novas variáveis centradas em zero e com variâncias iguais a 1. Neste caso, as componentes principais são determinadas a partir da matriz de covariâncias das variáveis originais padronizadas, o que é equivalente a extrair-se as componentes principais utilizando-se a matriz de correlação das variáveis originais.
 
-Uma vez determinadas as componentes principais, os seus valores numéricos, denominados escores, podem ser clculados para cada elemento amostral. Deste modo, os valores de cada componente podem ser analisados, usando-se técnicas estatísticas usuais como análise de variância e análise de regressão, dentre outras.
+Uma vez determinadas as componentes principais, os seus valores numéricos, denominados escores, podem ser calculados para cada elemento amostral. Deste modo, os valores de cada componente podem ser analisados, usando-se técnicas estatísticas usuais como análise de variância e análise de regressão, dentre outras.
 
 Observação: Quando a distribuição de probabilidades do vetor aleatório em estudo é normal p-variada, as componentes principais, além de não correlacionadas, são independentes e têm distribuição normal. Entretanto, a suposição de normalidade não é requisito necessário para que a técnica de PCA possa ser realizada.
 
