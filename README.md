@@ -1,3 +1,5 @@
+<style> body {text-align: justify} </style>
+
 # Estatística Multivariada / Aprendizado Não-Supervisionado
 
 
