@@ -1,4 +1,4 @@
-# Estatística Multivariada / Aprendizado Não-Supervisionado
+## Estatística Multivariada / Aprendizado Não-Supervisionado
 
 
 A Estatística Multivariada consiste em um conjunto de métodos estatísticos utilizados em situações nas quais várias variáveis são medidas simultaneamente, em cada elemento amostral. Em geral, as variáveis são correlacionadas entre si e quanto maior o número de variáveis, mais complexa torna-se a análise por métodos comuns de Estatística Univariada.
