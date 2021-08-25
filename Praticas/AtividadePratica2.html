@@ -557,9 +557,9 @@ div.tocify {
 ##  with the empirical chi square  3.16  with prob &lt;  0.92 
 ## 
 ## Fit based upon off diagonal values = 1</code></pre>
-<p>Com a matriz rotacionada pelo método varimax, podemos ver que o fator 1 apresenta altas cargas para as variáveis mensuradas em minutos, isto é, as variáveis referentes às provas de 800m, 1500m, 3000m e a maratona. Já o fator 2 tem maiores cargas nas demais variáveis referentes às provas mensuradas em segundos. Então, podemos interpretar esses fatores como:</p>
-<p>Fator 1: desempenho em provas de curta distância.</p>
-<p>Fator 2: desempenho em provas de longa distância.</p>
+<p>Com a matriz rotacionada pelo método varimax, podemos ver que o fator 1 apresenta altas cargas para as variáveis mensuradas em minutos, isto é, as variáveis referentes às provas de 800m, 1500m, 3000m e maratona. Já o fator 2 tem maiores cargas nas demais variáveis, referentes às provas mensuradas em segundos. Então, podemos interpretar esses fatores como:</p>
+<p>Fator 1: desempenho em provas de longa distância.</p>
+<p>Fator 2: desempenho em provas de curta distância.</p>
 <p><br></p>
 </div>
 <div id="antes-e-depois-da-rotação" class="section level3">
@@ -634,8 +634,8 @@ div.tocify {
 ## ussr     -0.88067544 -1.17640931
 ## wsamoa    4.49779854  0.11838877</code></pre>
 </div>
-<div id="ranking-do-fator-1-provas-de-curta-distância" class="section level3">
-<h3>Ranking do fator 1: Provas de curta distância</h3>
+<div id="ranking-do-fator-1-provas-de-longa-distância" class="section level3">
+<h3>Ranking do fator 1: Provas de longa distância</h3>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>scores <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(RC1))</span></code></pre></div>
 <pre><code>##                  RC1         RC2
 ## wsamoa    4.49779854  0.11838877
@@ -694,8 +694,8 @@ div.tocify {
 ## norway   -1.20034995  0.43447080
 ## dprkorea -1.25754392  1.72344837</code></pre>
 </div>
-<div id="ranking-do-fator-2-provas-de-longa-distância" class="section level3">
-<h3>Ranking do fator 2: Provas de longa distância</h3>
+<div id="ranking-do-fator-2-provas-de-curta-distância" class="section level3">
+<h3>Ranking do fator 2: Provas de curta distância</h3>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>scores <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(RC2))</span></code></pre></div>
 <pre><code>##                  RC1         RC2
 ## cookis    0.75358226  2.96481554
