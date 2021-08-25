@@ -162,11 +162,11 @@ princ2 = principal(dados, nfactors = 2, rotate = "varimax", scores = TRUE)
 princ2
 ```
 
-Com a matriz rotacionada pelo método varimax, podemos ver que o fator 1 apresenta altas cargas para as variáveis mensuradas em minutos, isto é, as variáveis referentes às provas de 800m, 1500m, 3000m e a maratona. Já o fator 2 tem maiores cargas nas demais variáveis referentes às provas mensuradas em segundos. Então, podemos interpretar esses fatores como:
+Com a matriz rotacionada pelo método varimax, podemos ver que o fator 1 apresenta altas cargas para as variáveis mensuradas em minutos, isto é, as variáveis referentes às provas de 800m, 1500m, 3000m e maratona. Já o fator 2 tem maiores cargas nas demais variáveis, referentes às provas mensuradas em segundos. Então, podemos interpretar esses fatores como:
 
-Fator 1: desempenho em provas de curta distância.
+Fator 1: desempenho em provas de longa distância.
 
-Fator 2: desempenho em provas de longa distância.
+Fator 2: desempenho em provas de curta distância.
 
 <br>
 
@@ -193,13 +193,13 @@ scores = as.data.frame(princ2$scores)
 scores
 ```
 
-### Ranking do fator 1: Provas de curta distância
+### Ranking do fator 1: Provas de longa distância
 
 ```{r}
 scores %>% arrange(desc(RC1))
 ```
 
-### Ranking do fator 2: Provas de longa distância
+### Ranking do fator 2: Provas de curta distância
 
 ```{r}
 scores %>% arrange(desc(RC2))
