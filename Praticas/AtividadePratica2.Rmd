@@ -1,15 +1,22 @@
 ---
 title: "Estatística Multivariada - Atividade Prática 2 - Análise Fatorial"
 author: "Elton Dantas de Oliveira Mesquita"
-date: "24/08/2021"
 output:
   html_document:
     theme: readable
     highlight: breezedark
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
 ---
 
+```{=html}
+<style> body {text-align: justify} </style>
+```
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
 ## Pacotes
@@ -20,7 +27,6 @@ library(dplyr)
 
 #install.packages("psych")
 library(psych)
-
 
 #install.packages("factoextra")
 library(factoextra)
@@ -132,7 +138,7 @@ Autovalores:
 PCA$sdev^2
 ```
 
-A primeira componente principal corresponde a 83% da variância total dos dados padronizados. Se tomarmos as duas primeiras componentes, essa proporção é de 92%. Também pelo gráfico screeplot, vemos que a porcentagem de variâncias explicadas fica cada vez menor e menos relevante a partir da terceira componente. Então, por esses critérios, estimaremos o número de fatores igual a 2 para a nossa análise.
+A primeira componente principal corresponde a 83% da variância total dos dados padronizados. Se tomarmos as duas primeiras componentes, essa proporção é de 92%. Também pelo gráfico screeplot, vemos que a porcentagem de variâncias explicadas fica cada vez menor e menos relevante a partir da terceira componente. Então, por esses critérios, estimaremos o número de fatores m = 2 para a nossa análise.
 
 <br>
 
@@ -152,8 +158,8 @@ A matriz de fatores acima, resultante da análise de componentes principais, é 
 Com o objetivo de possibilitar uma melhor interpretação dos fatores, é comum fazermos uma transformação/rotação dos fatores. Na rotação ortogonal, os eixos são mantidos em ângulo reto e o método mais utilizado é o varimax. Esse método de rotação minimiza o número de variáveis com altas cargas sobre um fator, a fim de permitir a interpretação dos fatores. Vejamos a baixo:
 
 ```{r}
-princ = principal(dados, nfactors = 2, rotate = "varimax", scores = TRUE)
-princ
+princ2 = principal(dados, nfactors = 2, rotate = "varimax", scores = TRUE)
+princ2
 ```
 
 Com a matriz rotacionada pelo método varimax, podemos ver que o fator 1 apresenta altas cargas para as variáveis mensuradas em minutos, isto é, as variáveis referentes às provas de 800m, 1500m, 3000m e a maratona. Já o fator 2 tem maiores cargas nas demais variáveis referentes às provas mensuradas em segundos. Então, podemos interpretar esses fatores como:
@@ -164,8 +170,37 @@ Fator 2: desempenho em provas de longa distância.
 
 <br>
 
-### Ranking por fator 1: Provas de curta distância
+### Antes e depois da rotação
 
 ```{r}
+plot(princ$loadings, xlim = c(0.87,0.95), ylim = c(-0.5,0.5), pch = 16, 
+     xlab = "Fator 1", ylab = "Fator 2", main = "via PCA")
+text(princ$loadings, rownames(princ$loadings), adj = c(0.5,1.5))
 
+plot(princ2$loadings, xlim = c(0.3,0.95), ylim = c(0.3,0.95), pch = 16, 
+     ylab = "Fator 2", main = "via rotação varimax")
+text(princ2$loadings, rownames(princ2$loadings), adj = c(0.5,1.5))
+```
+
+Comparando os dois gráficos, percebemos que após a rotação pelo método varimax há uma separação mais nítida das variáveis em relação aos fatores. Com a rotação, as variáveis 100m, 200m e 400m têm cargas mais altas no fator 2, enquanto que as variáveis 800m, 1500m, 3000m e Maratona têm cargas mais altas no fator 1.
+
+<br>
+
+Por fim, com os fatores interpretados, faremos um ranking dos escores a partir deles.
+
+```{r}
+scores = as.data.frame(princ2$scores)
+scores
+```
+
+### Ranking do fator 1: Provas de curta distância
+
+```{r}
+scores %>% arrange(desc(RC1))
+```
+
+### Ranking do fator 2: Provas de longa distância
+
+```{r}
+scores %>% arrange(desc(RC2))
 ```
