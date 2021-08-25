@@ -65,7 +65,7 @@ variaveis = c("100m (s)","200m (s)","400m (s)","800m (min)",
 colnames(dados) = variaveis
 
 # Breve visualização dos dados
-head(dados,10)
+head(dados,5)
 
 # Algumas estatísticas descritivas
 describe(dados)

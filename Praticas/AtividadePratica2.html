@@ -381,29 +381,19 @@ div.tocify {
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dados) <span class="ot">=</span> variaveis</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Breve visualização dos dados</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dados,<span class="dv">10</span>)</span></code></pre></div>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dados,<span class="dv">5</span>)</span></code></pre></div>
 <pre><code>##          100m (s) 200m (s) 400m (s) 800m (min) 1500m (min) 3000m (min)
 ## argentin    11.61    22.94    54.50       2.15        4.43        9.79
 ## australi    11.20    22.35    51.08       1.98        4.13        9.08
 ## austria     11.43    23.09    50.62       1.99        4.22        9.34
 ## belgium     11.41    23.04    52.00       2.00        4.14        8.88
 ## bermuda     11.46    23.05    53.30       2.16        4.58        9.81
-## brazil      11.31    23.17    52.80       2.10        4.49        9.77
-## burma       12.14    24.47    55.00       2.18        4.45        9.51
-## canada      11.00    22.25    50.06       2.00        4.06        8.81
-## chile       12.00    24.52    54.90       2.05        4.23        9.37
-## china       11.95    24.41    54.97       2.08        4.33        9.31
 ##          Maratona (min)
 ## argentin         178.52
 ## australi         152.37
 ## austria          159.37
 ## belgium          157.85
-## bermuda          169.98
-## brazil           168.75
-## burma            191.02
-## canada           149.45
-## chile            171.38
-## china            168.48</code></pre>
+## bermuda          169.98</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Algumas estatísticas descritivas</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(dados)</span></code></pre></div>
 <pre><code>##                vars  n   mean    sd median trimmed   mad    min    max  range
