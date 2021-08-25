@@ -16,8 +16,6 @@ library(FactoMineR)
 #install.packages("factoextra")
 library(factoextra)
 
-
-
 #install.packages("ggplot2")
 library(ggplot2)
 
