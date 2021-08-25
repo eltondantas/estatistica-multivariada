@@ -1,0 +1,171 @@
+---
+title: "Estatística Multivariada - Atividade Prática 2 - Análise Fatorial"
+author: "Elton Dantas de Oliveira Mesquita"
+date: "24/08/2021"
+output:
+  html_document:
+    theme: readable
+    highlight: breezedark
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Pacotes
+
+```{r}
+#install.packages("dplyr")
+library(dplyr)
+
+#install.packages("psych")
+library(psych)
+
+
+#install.packages("factoextra")
+library(factoextra)
+
+#install.packages("corrplot")
+library(corrplot)
+```
+
+<br>
+
+## Dados
+
+Nessa atividade, realizaremos uma análise fatorial exploratória no conjunto de dados a seguir, a fim de reduzirmos a sua dimensionalidade. Os dados consistem nas marcas obtidas pelas atletas de diversos países por ocasião dos Jogos Olímpicos de Los Angeles (1984) e suas variáveis representam os tempos registrados por elas nas seguintes competições:
+
+-   ***100m (s)***: Corrida de 100m (em segundos);
+-   ***200m (s)***: Corrida de 200m (em segundos);
+-   ***400m (s)***: Corrida de 400m (em segundos);
+-   ***800m (min)***: Corrida de 800m (em minutos);
+-   ***1500m (min)***: Corrida de 1500m (em minutos);
+-   ***3000m (min)***: Corrida de 3000m (em minutos);
+-   ***Maratona (min)***: Maratona (em minutos).
+
+```{r}
+# Importando os dados
+dados = read.table("T1-9.DAT")
+
+# Nomeando as linhas com os nomes dos países
+row.names(dados) = dados[,8]
+
+# Removendo a coluna de países
+dados = dados[,-8]
+
+# Nomeando as variáveis
+variaveis = c("100m (s)","200m (s)","400m (s)","800m (min)",
+              "1500m (min)","3000m (min)", "Maratona (min)")
+colnames(dados) = variaveis
+
+# Breve visualização dos dados
+head(dados,10)
+
+# Algumas estatísticas descritivas
+describe(dados)
+```
+
+Como as variáveis são medidas em unidades diferentes, faremos a análise utilizando a matriz de correlações amostral.
+
+<br>
+
+## Correlações
+
+Visualizando as correlações entre as variáveis:
+
+```{r}
+corrplot(cor(dados),
+         method = "color",
+         type = "lower",
+         addCoef.col = "white",
+         tl.col = "black")
+```
+
+Verificamos pela figura acima que as correlações são todas positivas e variam de 0,69 a 0,97.
+
+<br>
+
+## Medidas de adequação amostral
+
+Para testar a conveniência do modelo fatorial, aplicaremos dois testes a seguir:
+
+### Teste de esfericidade de Bartlett
+
+$H_0:$ a matriz de correlação da população é uma matriz identidade, ou seja, as variáveis são não-correlacionadas na população.
+
+Um valor elevado da estatística de teste favorece a rejeição da hipótese nula.
+
+```{r}
+cortest.bartlett(dados)
+```
+
+O p-valor obtido com o teste de Bartlett foi extremamente baixo. Ao nível de significância de 5%, rejeitamos a hipótese de que as variáveis não são correlacionadas na população.
+
+### Medida de Adequação Amostral KMO
+
+A medida de adequação amostral de Kaiser-Meyer-Olkin compara as magnitudes dos coeficientes de correlação observados com as magnitudes dos coeficientes de correlação parcial. Pequenos valores de KMO indicam que as correlações entre os pares de variáveis não podem ser explicadas por outras variáveis, indicando que a análise fatorial não é adequada.
+
+```{r}
+KMO(dados)
+```
+
+Todas as variáveis obtiveram adequação meritória com valores a partir de 0,8. A estatística KMO de 0,84 obtida, juntamente ao teste anterior, também concorda que a análise fatorial é apropriada para analisarmos a matriz de correlação.
+
+<br>
+
+## Análise Fatorial
+
+A seguir, vamos obter os fatores através do método das componentes principais com a matriz de correlações amostral.
+
+```{r}
+PCA = princomp(dados, cor = TRUE)
+summary(PCA)
+```
+
+```{r}
+fviz_screeplot(PCA)
+```
+
+Autovalores:
+
+```{r}
+PCA$sdev^2
+```
+
+A primeira componente principal corresponde a 83% da variância total dos dados padronizados. Se tomarmos as duas primeiras componentes, essa proporção é de 92%. Também pelo gráfico screeplot, vemos que a porcentagem de variâncias explicadas fica cada vez menor e menos relevante a partir da terceira componente. Então, por esses critérios, estimaremos o número de fatores igual a 2 para a nossa análise.
+
+<br>
+
+### Matriz de fatores - componentes principais - m = 2
+
+```{r}
+princ = principal(dados, nfactors = 2, rotate = "none", scores = TRUE)
+princ
+```
+
+A matriz de fatores acima, resultante da análise de componentes principais, é composta pelos coeficientes (cargas fatoriais) que expressam as variáveis padronizadas em termos dos fatores. Valores altos das cargas fatoriais representam boa relação entre a variável e o fator. Essa matriz não rotacionada apresenta dificuldades para ser interpretada, porque o fator 1 está altamente correlacionado com todas as variáveis.
+
+<br>
+
+### Matriz de fatores - rotação varimax - m = 2
+
+Com o objetivo de possibilitar uma melhor interpretação dos fatores, é comum fazermos uma transformação/rotação dos fatores. Na rotação ortogonal, os eixos são mantidos em ângulo reto e o método mais utilizado é o varimax. Esse método de rotação minimiza o número de variáveis com altas cargas sobre um fator, a fim de permitir a interpretação dos fatores. Vejamos a baixo:
+
+```{r}
+princ = principal(dados, nfactors = 2, rotate = "varimax", scores = TRUE)
+princ
+```
+
+Com a matriz rotacionada pelo método varimax, podemos ver que o fator 1 apresenta altas cargas para as variáveis mensuradas em minutos, isto é, as variáveis referentes às provas de 800m, 1500m, 3000m e a maratona. Já o fator 2 tem maiores cargas nas demais variáveis referentes às provas mensuradas em segundos. Então, podemos interpretar esses fatores como:
+
+Fator 1: desempenho em provas de curta distância.
+
+Fator 2: desempenho em provas de longa distância.
+
+<br>
+
+### Ranking por fator 1: Provas de curta distância
+
+```{r}
+
+```
