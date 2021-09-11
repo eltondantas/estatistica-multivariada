@@ -1,0 +1,68 @@
+---
+title: "Estatística Multivariada - Atividade Prática 3 - Análise de Correlações Canônicas"
+author: "Elton Dantas de Oliveira Mesquita"
+output:
+  html_document:
+    theme: readable
+    highlight: breezedark
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+```{=html}
+<style> body {text-align: justify} </style>
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Pacotes
+
+```{r}
+library(dplyr)
+library(CCA)
+library(CCP)
+library(corrplot)
+library(ggplot2)
+library(GGally)
+library(psych)
+library(factoextra)
+```
+
+## Dados
+
+Nessa atividade, realizaremos uma análise de correlação canônica a partir dos dados da Premier 2018-2019. A análise será desenvolvida entre dois grupos de variáveis, referentes aos times da casa e aos de fora.
+
+Utilizaremos as seguintes variáveis:
+
+-   ***FTHGb***: média de gols do time da casa até a rodada anterior;
+
+-   ***FTAGb***: média de gols do time de fora até a rodada anterior;
+
+-   ***HSb***: média de chutes no alvo do time da casa até a rodada anterior;
+
+-   ***HSTb***: média de chutes no alvo do time de fora até a rodada anterior.
+
+```{r}
+dados = read.csv("premier20182019.csv",sep=";",dec=",")
+
+
+casa = dados %>% dplyr::select(FTHG,HS) %>% filter(FTHG != 0 | HS != 0)
+fora = dados %>% dplyr::select(FTAG,HST) %>% filter(FTAG != 0 | HST != 0)
+
+X = cbind(casa,fora)
+
+ggpairs(dados[-1])
+
+
+ca = ca(X)
+
+
+
+cc = CCA::cc(casa,fora)
+
+cca(casa,fora)
+```
